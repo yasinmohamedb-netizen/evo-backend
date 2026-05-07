@@ -37,21 +37,20 @@ public class GPTService {
             .connectTimeout(Duration.ofSeconds(15))
             .build();
 
-    public GPTService(@Value("${groq.api.keys}") String keys) {
-        if (keys == null || keys.isBlank()) {
-            throw new RuntimeException("CRITICAL: API keys missing in application.properties");
-        }
-        
-        // Clean keys of any extra spaces or semi-colons from the property file
-        this.apiKeys = Arrays.stream(keys.split(","))
-                             .map(String::trim)
-                             .map(k -> k.replaceAll("[;\\s]", "")) 
-                             .filter(key -> !key.isEmpty())
-                             .collect(Collectors.toList());
-        
-        System.out.println("[EVO-LOG] Groq Service initialized with " + apiKeys.size() + " key(s).");
-    }
+            public GPTService(@Value("${groq.api.key}") String keys) {
 
+                if (keys == null || keys.isBlank()) {
+                    throw new RuntimeException("CRITICAL: GROQ_API_KEY missing");
+                }
+            
+                this.apiKeys = Arrays.stream(keys.split(","))
+                        .map(String::trim)
+                        .filter(key -> !key.isEmpty())
+                        .collect(Collectors.toList());
+            
+                System.out.println("[EVO-LOG] Groq initialized with " 
+                        + apiKeys.size() + " key(s).");
+            }
     private String getActiveKey() {
         return apiKeys.get(currentKeyIndex.get() % apiKeys.size());
     }
